@@ -13,6 +13,8 @@ import {
   ReferenceLine,
   Cell,
 } from "recharts";
+import type { TooltipProps } from "recharts";
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 import {
   Play,
   RotateCcw,
@@ -22,20 +24,22 @@ import {
   FileDown,
 } from "lucide-react";
 
-const formatBR = (value: unknown, digits = 2) => {
-  const numericValue =
-    typeof value === "number"
-      ? value
-      : typeof value === "string"
-      ? Number(value.replace(",", "."))
-      : Number(value);
+const toNumber = (value: unknown): number => {
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  if (typeof value === "string") {
+    const parsed = Number(value.replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
 
-  return Number.isFinite(numericValue)
-    ? numericValue.toLocaleString("pt-BR", {
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits,
-      })
-    : "0,00";
+const formatBR = (value: unknown, digits = 2): string => {
+  const numericValue = toNumber(value);
+  return numericValue.toLocaleString("pt-BR", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
 };
 
 type Nozzle = {
@@ -43,8 +47,49 @@ type Nozzle = {
   lpm: string;
 };
 
+type ResultRow = {
+  bico: string;
+  numeroBico: number;
+  lpm: number;
+  lha: number;
+  alvo: number;
+  alvoLpm: number;
+  desvioAbs: number;
+  desvioPct: number;
+  status: "Fora" | "Ok";
+  color: string;
+};
+
 const buildNozzles = (count: number): Nozzle[] =>
   Array.from({ length: count }, (_, i) => ({ id: i + 1, lpm: "" }));
+
+function CustomTooltip({
+  active,
+  payload,
+  label,
+}: TooltipProps<ValueType, NameType>) {
+  if (!active || !payload || payload.length === 0) return null;
+
+  const first = payload[0];
+  const valor = toNumber(first?.value);
+
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        border: "1px solid #cbd5e1",
+        borderRadius: 12,
+        padding: 10,
+        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+        color: "#000000",
+        fontSize: 13,
+      }}
+    >
+      <div style={{ fontWeight: 700, marginBottom: 4 }}>Bico {String(label)}</div>
+      <div>Vazão final: {formatBR(valor, 2)} L/ha</div>
+    </div>
+  );
+}
 
 export default function App() {
   const [bloco, setBloco] = useState("");
@@ -62,10 +107,10 @@ export default function App() {
   const graficoPdfRef = useRef<HTMLDivElement>(null);
   const tabelaPdfRef = useRef<HTMLDivElement>(null);
 
-  const nozzleCount = Math.max(1, Number(quantidadeBicos) || 1);
-  const v = Number(velocidade) || 0;
-  const esp = Number(espacamento) || 0;
-  const alvoLha = Number(vazaoAlvo) || 0;
+  const nozzleCount = Math.max(1, Math.floor(toNumber(quantidadeBicos)) || 1);
+  const v = toNumber(velocidade);
+  const esp = toNumber(espacamento);
+  const alvoLha = toNumber(vazaoAlvo);
 
   const updateNozzleCount = () => {
     setNozzles((prev) => {
@@ -88,8 +133,8 @@ export default function App() {
     const alvoLpm = divisor > 0 ? (alvoLha * divisor) / 600 : 0;
     const tolerancia = alvoLha * 0.1;
 
-    const rows = nozzles.slice(0, nozzleCount).map((n) => {
-      const lpm = Number(n.lpm) || 0;
+    const rows: ResultRow[] = nozzles.slice(0, nozzleCount).map((n) => {
+      const lpm = toNumber(n.lpm);
       const lha = divisor > 0 ? (lpm * 600) / divisor : 0;
       const desvioAbs = lha - alvoLha;
       const desvioPct = alvoLha > 0 ? (desvioAbs / alvoLha) * 100 : 0;
@@ -514,12 +559,7 @@ export default function App() {
                             style: { fill: "#000000", fontSize: 14 },
                           }}
                         />
-                        <Tooltip
-                          formatter={(value: unknown, name: string | number) => [
-                            `${formatBR(value)} L/ha`,
-                            String(name),
-                          ]}
-                        />
+                        <Tooltip content={<CustomTooltip />} />
                         <Legend wrapperStyle={{ color: "#000000", fontSize: 12 }} />
                         <ReferenceLine y={alvoLha} stroke="#2563eb" strokeWidth={3} />
                         <Bar dataKey="lha" name="Vazão final" radius={[8, 8, 0, 0]}>
