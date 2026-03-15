@@ -68,11 +68,17 @@ const buildNozzles = (count: number): Nozzle[] =>
   Array.from({ length: count }, (_, i) => ({ id: i + 1, lpm: "" }));
 
 function CustomTooltip(props: TooltipProps<ValueType, NameType>) {
-  const { active } = props;
-  const payload = Array.isArray((props as { payload?: unknown[] }).payload)
-    ? ((props as { payload?: unknown[] }).payload as unknown[])
+  const active = props.active;
+  const payload = Array.isArray(
+    (props as TooltipProps<ValueType, NameType> & { payload?: unknown[] }).payload
+  )
+    ? ((props as TooltipProps<ValueType, NameType> & { payload?: unknown[] })
+        .payload as unknown[])
     : [];
-  const label = (props as { label?: unknown }).label;
+
+  const label = (
+    props as TooltipProps<ValueType, NameType> & { label?: unknown }
+  ).label;
 
   if (!active || payload.length === 0) return null;
 
