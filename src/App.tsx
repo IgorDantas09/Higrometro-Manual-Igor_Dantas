@@ -14,7 +14,10 @@ import {
   Cell,
 } from "recharts";
 import type { TooltipProps } from "recharts";
-import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
+import type {
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 import {
   Play,
   RotateCcw,
@@ -85,7 +88,9 @@ function CustomTooltip({
         fontSize: 13,
       }}
     >
-      <div style={{ fontWeight: 700, marginBottom: 4 }}>Bico {String(label)}</div>
+      <div style={{ fontWeight: 700, marginBottom: 4 }}>
+        Bico {String(label)}
+      </div>
       <div>Vazão final: {formatBR(valor, 2)} L/ha</div>
     </div>
   );
@@ -316,7 +321,14 @@ export default function App() {
     >
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 8, color: "#000000" }}>
+          <h1
+            style={{
+              fontSize: 32,
+              fontWeight: 700,
+              marginBottom: 8,
+              color: "#000000",
+            }}
+          >
             Dashboard de Validação da Vazão
           </h1>
           <p style={{ color: "#000000", fontSize: 14 }}>
@@ -361,7 +373,11 @@ export default function App() {
                     value={quantidadeBicos}
                     onChange={(e) => setQuantidadeBicos(e.target.value)}
                   />
-                  <button style={secondaryButtonStyle} onClick={updateNozzleCount}>
+                  <button
+                    type="button"
+                    style={secondaryButtonStyle}
+                    onClick={updateNozzleCount}
+                  >
                     Atualizar
                   </button>
                 </div>
@@ -401,7 +417,9 @@ export default function App() {
                 <br />
                 <strong>Litros por hectare = (LPM × 600) / (V × ESP)</strong>
                 <br />
-                <strong>Litros por minuto alvo = (L/ha alvo × V × ESP) / 600</strong>
+                <strong>
+                  Litros por minuto alvo = (L/ha alvo × V × ESP) / 600
+                </strong>
               </div>
             </div>
 
@@ -414,7 +432,13 @@ export default function App() {
                   marginBottom: 12,
                 }}
               >
-                <h2 style={{ fontSize: 20, fontWeight: 700, color: "#000000" }}>
+                <h2
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 700,
+                    color: "#000000",
+                  }}
+                >
                   LPM coletado de cada bico
                 </h2>
                 <span style={badgeSecondaryStyle}>{nozzleCount} bicos</span>
@@ -439,13 +463,29 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: 12, marginTop: 20, flexWrap: "wrap" }}>
-              <button style={primaryButtonStyle} onClick={handleRun} disabled={!canRun}>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginTop: 20,
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                type="button"
+                style={primaryButtonStyle}
+                onClick={handleRun}
+                disabled={!canRun}
+              >
                 <Play size={16} />
                 Gerar validação
               </button>
 
-              <button style={outlineButtonStyle} onClick={handleReset}>
+              <button
+                type="button"
+                style={outlineButtonStyle}
+                onClick={handleReset}
+              >
                 <RotateCcw size={16} />
                 Limpar
               </button>
@@ -510,8 +550,12 @@ export default function App() {
                     }}
                   >
                     <span style={badgeBlueStyle}>Linha azul = alvo L/ha</span>
-                    <span style={badgeGreenStyle}>Barra verde = dentro do alvo</span>
-                    <span style={badgeRedStyle}>Barra vermelha = fora de ±10%</span>
+                    <span style={badgeGreenStyle}>
+                      Barra verde = dentro do alvo
+                    </span>
+                    <span style={badgeRedStyle}>
+                      Barra vermelha = fora de ±10%
+                    </span>
                   </div>
                 </div>
 
@@ -560,11 +604,24 @@ export default function App() {
                           }}
                         />
                         <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{ color: "#000000", fontSize: 12 }} />
-                        <ReferenceLine y={alvoLha} stroke="#2563eb" strokeWidth={3} />
-                        <Bar dataKey="lha" name="Vazão final" radius={[8, 8, 0, 0]}>
+                        <Legend
+                          wrapperStyle={{ color: "#000000", fontSize: 12 }}
+                        />
+                        <ReferenceLine
+                          y={alvoLha}
+                          stroke="#2563eb"
+                          strokeWidth={3}
+                        />
+                        <Bar
+                          dataKey="lha"
+                          name="Vazão final"
+                          radius={[8, 8, 0, 0]}
+                        >
                           {results.rows.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={entry.color}
+                            />
                           ))}
                         </Bar>
                       </ComposedChart>
@@ -576,12 +633,15 @@ export default function App() {
 
             <div style={{ marginBottom: 20 }}>
               <button
+                type="button"
                 style={primaryButtonStyle}
                 onClick={exportarGraficoPDF}
                 disabled={exportandoGrafico}
               >
                 <FileDown size={16} />
-                {exportandoGrafico ? "Gerando PDF..." : "Gerar PDF do gráfico"}
+                {exportandoGrafico
+                  ? "Gerando PDF..."
+                  : "Gerar PDF do gráfico"}
               </button>
             </div>
 
@@ -598,12 +658,15 @@ export default function App() {
                 >
                   <h2 style={cardTitleStyle}>3. Tabela de conferência</h2>
                   <button
+                    type="button"
                     style={primaryButtonStyle}
                     onClick={exportarTabelaPDF}
                     disabled={exportandoTabela}
                   >
                     <FileDown size={16} />
-                    {exportandoTabela ? "Gerando PDF..." : "Gerar PDF da tabela"}
+                    {exportandoTabela
+                      ? "Gerando PDF..."
+                      : "Gerar PDF da tabela"}
                   </button>
                 </div>
               </div>
@@ -611,9 +674,19 @@ export default function App() {
               <div style={{ padding: 20 }}>
                 <div
                   ref={tabelaPdfRef}
-                  style={{ background: "#fff", padding: 8, color: "#000000" }}
+                  style={{
+                    background: "#fff",
+                    padding: 8,
+                    color: "#000000",
+                  }}
                 >
-                  <div style={{ marginBottom: 16, fontSize: 14, color: "#000000" }}>
+                  <div
+                    style={{
+                      marginBottom: 16,
+                      fontSize: 14,
+                      color: "#000000",
+                    }}
+                  >
                     <div>
                       <strong>Bloco:</strong> {bloco || "-"}
                     </div>
@@ -652,7 +725,10 @@ export default function App() {
                       </thead>
                       <tbody>
                         {results.rows.map((row) => (
-                          <tr key={row.numeroBico} style={{ borderTop: "1px solid #e2e8f0" }}>
+                          <tr
+                            key={row.numeroBico}
+                            style={{ borderTop: "1px solid #e2e8f0" }}
+                          >
                             <Td>{row.numeroBico}</Td>
                             <Td>{formatBR(row.lpm, 3)}</Td>
                             <Td>{formatBR(row.alvoLpm, 3)}</Td>
@@ -667,7 +743,9 @@ export default function App() {
                                   fontWeight: 700,
                                   color: "#ffffff",
                                   background:
-                                    row.status === "Fora" ? "#dc2626" : "#16a34a",
+                                    row.status === "Fora"
+                                      ? "#dc2626"
+                                      : "#16a34a",
                                 }}
                               >
                                 {row.status}
@@ -736,7 +814,14 @@ function StatCard({
 }) {
   return (
     <div style={pdfStatCardStyle}>
-      <div style={{ padding: 16, display: "flex", alignItems: "center", gap: 14 }}>
+      <div
+        style={{
+          padding: 16,
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+        }}
+      >
         <div
           style={{
             padding: 10,
